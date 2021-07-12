@@ -8,16 +8,20 @@ class Iniciocap1 extends StatefulWidget {
 
 class _Iniciocap1State extends State<Iniciocap1> {
   VideoPlayerController _controller;
-  Future<void> _inizializeVideoPlayerFuture;
 
   @override
   void initState() {
-    _controller = VideoPlayerController.network(
-        "https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4");
-    _inizializeVideoPlayerFuture = _controller.initialize();
+    super.initState();
+    iniciaVideo();
+  }
+
+  iniciaVideo() async {
+    _controller = VideoPlayerController.network("https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4")
+      ..initialize().then((_) {
+        setState(() {});
+      });
     _controller.setLooping(true);
     _controller.setVolume(1.0);
-    super.initState();
   }
 
   @override
@@ -32,20 +36,9 @@ class _Iniciocap1State extends State<Iniciocap1> {
       appBar: AppBar(
         title: Text("Capitulo 1"),
       ),
-      body: FutureBuilder(
-        future: _inizializeVideoPlayerFuture,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.done) {
-            return AspectRatio(
-              aspectRatio: _controller.value.aspectRatio,
-              child: VideoPlayer(_controller),
-            );
-          } else {
-            return Center(
-              child: CircularProgressIndicator(),
-            );
-          }
-        },
+      body: AspectRatio(
+        aspectRatio: _controller.value.aspectRatio,
+        child: VideoPlayer(_controller),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
@@ -57,8 +50,7 @@ class _Iniciocap1State extends State<Iniciocap1> {
             }
           });
         },
-        child:
-            Icon(_controller.value.isPlaying ? Icons.pause : Icons.play_arrow),
+        child: Icon(_controller.value.isPlaying ? Icons.pause : Icons.play_arrow),
       ),
     );
   }
